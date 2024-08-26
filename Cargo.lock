@@ -145,15 +145,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
 
 [[package]]
-name = "mkrand"
-version = "0.1.0"
-dependencies = [
- "base64",
- "clap",
- "rand",
-]
-
-[[package]]
 name = "ppv-lite86"
 version = "0.2.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -225,6 +216,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "toolkit"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "clap",
+ "rand",
 ]
 
 [[package]]
