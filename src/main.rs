@@ -1,5 +1,5 @@
 use clap::{builder::styling, Parser, Subcommand};
-use toolkit::rand::RandArgs;
+use toolkit::{rand::RandArgs, CommandHandler};
 
 const STYLES: styling::Styles = styling::Styles::styled()
     .header(styling::AnsiColor::Green.on_default().bold())
@@ -24,7 +24,9 @@ enum Service {
 fn main() {
     let args = ProgramArgs::parse();
 
-    match args.service {
-        Service::Rand(args) => toolkit::rand::execute(&args),
-    }
+    let command = match args.service {
+        Service::Rand(args) => toolkit::rand::RandCommand::new(args),
+    };
+
+    command.execute();
 }

@@ -1,7 +1,11 @@
+use crate::CommandHandler;
 use base64::engine::{general_purpose::URL_SAFE_NO_PAD, Engine};
 use clap::{Args, ValueEnum};
 use rand::Rng;
-use std::vec;
+use std::{
+    fmt::{Formatter, LowerHex, Result},
+    vec,
+};
 
 #[derive(Debug, Clone)]
 struct Sequence {
@@ -13,18 +17,24 @@ impl Sequence {
         let mut bytes = vec![0u8; size];
         rand::thread_rng().fill(&mut bytes[..]);
 
-        Sequence { bytes }
+        Self { bytes }
     }
 
     fn to_hex(&self) -> String {
-        self.bytes
-            .iter()
-            .map(|&byte| format!("{:02x}", &byte))
-            .collect()
+        format!("{:02x}", &self)
     }
 
     fn to_base64(&self) -> String {
         URL_SAFE_NO_PAD.encode(&self.bytes)
+    }
+}
+
+impl LowerHex for Sequence {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> Result {
+        self.bytes
+            .iter()
+            .for_each(|&byte| LowerHex::fmt(&byte, formatter).unwrap_or(()));
+        Ok(())
     }
 }
 
@@ -44,11 +54,24 @@ pub struct RandArgs {
     format: Format,
 }
 
-pub fn execute(args: &RandArgs) {
-    let sequence = Sequence::new(args.size);
+pub struct RandCommand {
+    args: RandArgs,
+}
 
-    match args.format {
-        Format::Hex => println!("{}", sequence.to_hex()),
-        Format::Base64 => println!("{}", sequence.to_base64()),
+impl RandCommand {
+    pub fn new(args: RandArgs) -> Self {
+        RandCommand { args }
+    }
+}
+
+impl CommandHandler for RandCommand {
+    fn execute(&self) {
+        let sequence = Sequence::new(self.args.size);
+        println!("{}", self.args.size);
+
+        match self.args.format {
+            Format::Hex => println!("{}", sequence.to_hex()),
+            Format::Base64 => println!("{}", sequence.to_base64()),
+        }
     }
 }
